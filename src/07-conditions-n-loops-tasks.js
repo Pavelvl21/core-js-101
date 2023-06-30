@@ -120,10 +120,16 @@ function isTriangle(a, b, c) {
  *   { top:20, left:20, width: 20, height: 20 }    =>  false
  *
  */
-function doRectanglesOverlap(/* rect1, rect2 */) {
-  throw new Error('Not implemented');
-}
+function doRectanglesOverlap(rect1, rect2) {
+  const rect1Right = rect1.left + rect1.width;
+  const rect1Bottom = rect1.top + rect1.height;
+  const rect2Right = rect2.left + rect2.width;
+  const rect2Bottom = rect2.top + rect2.height;
+  const compareRight = rect1Right < rect2.left || rect2Right < rect1.left;
+  const compareBottom = rect1Bottom < rect2.top || rect2Bottom < rect1.top;
 
+  return (!compareRight && !compareBottom) || false;
+}
 
 /**
  * Returns true, if point lies inside the circle, otherwise false.
@@ -200,10 +206,13 @@ function findFirstSingleChar(str) {
  *   5, 3, true, true   => '[3, 5]'
  *
  */
-function getIntervalString(/* a, b, isStartIncluded, isEndIncluded */) {
-  throw new Error('Not implemented');
+function getIntervalString(a, b, isStartIncluded, isEndIncluded) {
+  const min = Math.min(a, b);
+  const max = Math.max(a, b);
+  const start = isStartIncluded ? '[' : '(';
+  const end = isEndIncluded ? ']' : ')';
+  return `${start}${min}, ${max}${end}`;
 }
-
 
 /**
  * Reverse the specified string (put all chars in reverse order)
@@ -265,8 +274,21 @@ function reverseInteger(num) {
  *   5436468789016589 => false
  *   4916123456789012 => false
  */
-function isCreditCardNumber(/* ccn */) {
-  throw new Error('Not implemented');
+function isCreditCardNumber(ccn) {
+  return ccn
+    .toString()
+    .split('')
+    .reverse()
+
+    .map((item, i) => {
+      const num = Number(item);
+      if (i % 2 === 0) {
+        return num;
+      }
+      const mult = num * 2;
+      return (mult > 9 && mult - 9) || mult;
+    })
+    .reduce((acc, item) => acc + item, 0) % 10 === 0;
 }
 
 /**
@@ -283,8 +305,12 @@ function isCreditCardNumber(/* ccn */) {
  *   10000 ( 1+0+0+0+0 = 1 ) => 1
  *   165536 (1+6+5+5+3+6 = 26,  2+6 = 8) => 8
  */
-function getDigitalRoot(/* num */) {
-  throw new Error('Not implemented');
+function getDigitalRoot(num) {
+  const result = num
+    .toString()
+    .split('')
+    .reduce((acc, item) => acc + Number(item), 0);
+  return (result < 10 && result) || getDigitalRoot(result);
 }
 
 
@@ -309,10 +335,26 @@ function getDigitalRoot(/* num */) {
  *   '{)' = false
  *   '{[(<{[]}>)]}' = true
  */
-function isBracketsBalanced(/* str */) {
-  throw new Error('Not implemented');
-}
+function isBracketsBalanced(str) {
+  const openingSymbols = ['(', '[', '{', '<'];
+  const closingSymbols = [')', ']', '}', '>'];
+  const isOpening = (smb) => openingSymbols.includes(smb);
+  const getClosed = (smb) => closingSymbols[openingSymbols.indexOf(smb)];
+  const result = [];
+  for (let i = 0; i < str.length; i += 1) {
+    const char = str[i];
 
+    if (isOpening(char)) {
+      result.push(getClosed(char));
+    } else {
+      const lastChar = result.pop();
+      if (char !== lastChar) {
+        return false;
+      }
+    }
+  }
+  return result.length === 0;
+}
 
 /**
  * Returns the string with n-ary (binary, ternary, etc, where n <= 10)
@@ -334,8 +376,8 @@ function isBracketsBalanced(/* str */) {
  *    365, 4  => '11231'
  *    365, 10 => '365'
  */
-function toNaryString(/* num, n */) {
-  throw new Error('Not implemented');
+function toNaryString(num, n) {
+  return num.toString(n);
 }
 
 
