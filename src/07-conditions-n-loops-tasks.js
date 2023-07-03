@@ -393,8 +393,27 @@ function toNaryString(num, n) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/verbalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(pathes) {
+  let commonPath = '';
+
+  if (pathes.length === 0) {
+    return commonPath;
+  }
+
+  const firstChar = pathes[0].split('/');
+
+  for (let i = 0; i < firstChar.length; i += 1) {
+    const pathSegment = firstChar[i];
+    const isCommon = pathes.every((path) => (
+      path.split('/')[i] === pathSegment
+    ));
+    if (!isCommon) {
+      break;
+    }
+    commonPath = `${commonPath}${pathSegment}/`;
+  }
+
+  return commonPath;
 }
 
 
@@ -416,8 +435,18 @@ function getCommonDirectoryPath(/* pathes */) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  const [rowOfMatrixB] = m2;
+  const multiplyedMatrix = [];
+  for (let row = 0; row < m1.length; row += 1) {
+    multiplyedMatrix[row] = [];
+    for (let column = 0; column < rowOfMatrixB.length; column += 1) {
+      let result = 0;
+      for (let i = 0; i < m2.length; i += 1) {
+        result += m1[row][i] * m2[i][column];
+      } multiplyedMatrix[row][column] = result;
+    }
+  } return multiplyedMatrix;
 }
 
 
@@ -451,8 +480,35 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  for (let i = 0; i < 3; i += 1) {
+    if (position[i][0] === position[i][1]
+      && position[i][1] === position[i][2]
+      && position[i][0] !== undefined) {
+      return position[i][0];
+    }
+  }
+
+  for (let i = 0; i < 3; i += 1) {
+    if (position[0][i] === position[1][i]
+      && position[1][i] === position[2][i]
+      && position[0][i] !== undefined) {
+      return position[0][i];
+    }
+  }
+
+  if (
+    (position[0][0] === position[1][1]
+      && position[1][1] === position[2][2]
+      && position[1][1] !== undefined)
+    || (position[0][2] === position[1][1]
+      && position[1][1] === position[2][0]
+      && position[1][1] !== undefined)
+  ) {
+    return position[1][1];
+  }
+
+  return undefined;
 }
 
 
